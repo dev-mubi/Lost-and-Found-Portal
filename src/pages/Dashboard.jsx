@@ -97,6 +97,17 @@ export default function Dashboard() {
                     </div>
                 </section>
             </main>
+
+            <footer style={{ marginTop: '4rem', padding: '2rem 0', borderTop: '1px solid var(--glass-border)', textAlign: 'center' }}>
+                <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', marginBottom: '1rem', flexWrap: 'wrap' }}>
+                    <Link to="/about" className="link">About</Link>
+                    <Link to="/terms" className="link">Terms of Service</Link>
+                    <Link to="/contact" className="link">Contact Us</Link>
+                </div>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+                    © 2026 Lost & Found Portal - CUI Abbottabad
+                </p>
+            </footer>
         </div>
     )
 }

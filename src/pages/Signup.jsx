@@ -76,7 +76,7 @@ export default function Signup() {
         }
 
         setMessage(
-            'Registration successful! Please check your email for verification.'
+            'Registration successful! Please check your email for the verification link. Click the link to verify your account, and then you can login to the portal.'
         )
 
         setTimeout(() => {
