@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '../supabase'
 import { useNavigate, Link } from 'react-router-dom'
+import { Upload, MapPin, Tag, Info, Phone, ArrowLeft, Send } from 'lucide-react'
 
 export default function Report() {
     const [name, setName] = useState('')
@@ -40,13 +41,12 @@ export default function Report() {
 
             let imageUrl = null
 
-            // Upload image if selected
             if (image) {
                 const fileExt = image.name.split('.').pop()
                 const fileName = `${Math.random()}.${fileExt}`
                 const filePath = `${user.id}/${fileName}`
 
-                const { error: uploadError, data } = await supabase.storage
+                const { error: uploadError } = await supabase.storage
                     .from('item-images')
                     .upload(filePath, image)
 
@@ -88,93 +88,95 @@ export default function Report() {
     }
 
     return (
-        <div style={{ padding: '2rem', maxWidth: '700px', margin: '0 auto' }}>
-            <Link to="/dashboard" className="link" style={{ marginBottom: '2rem', display: 'inline-block' }}>← Back to Dashboard</Link>
+        <div className="fade-in" style={{ maxWidth: '800px', margin: '0 auto' }}>
+            <Link to="/dashboard" className="btn" style={{ marginBottom: '2rem' }}>
+                <ArrowLeft size={18} /> Back to Dashboard
+            </Link>
 
             <div className="glass-card" style={{ padding: '3rem' }}>
-                <h2 className="text-center">Report an Item</h2>
-                <p className="text-center" style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>
-                    Fill in the details below to help us track the item.
+                <h2 style={{ marginBottom: '0.5rem' }}>Report an Item</h2>
+                <p style={{ color: 'var(--text-muted)', marginBottom: '2.5rem' }}>
+                    Provide accurate details to help the community.
                 </p>
 
-                {message && <div style={{
-                    padding: '1rem',
-                    borderRadius: '0.5rem',
-                    marginBottom: '1rem',
-                    background: message.includes('Success') ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                    color: message.includes('Success') ? 'var(--success)' : 'var(--error)'
-                }}>{message}</div>}
+                {message && (
+                    <div className={message.includes('Success') ? 'success-msg' : 'error-msg'} style={{ padding: '1rem', borderRadius: '8px', marginBottom: '2rem', border: '1px solid', textAlign: 'center', background: message.includes('Success') ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)' }}>
+                        {message}
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit}>
-                    <div className="input-group">
-                        <label>Object (Item Name)</label>
-                        <input placeholder="e.g. Black Wallet, Keys" value={name} onChange={(e) => setName(e.target.value)} required />
+                    <div className="grid grid-2">
+                        <div className="input-group">
+                            <label className="input-label">Object Name</label>
+                            <div style={{ position: 'relative' }}>
+                                <Tag size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                                <input className="form-control" style={{ paddingLeft: '3rem' }} placeholder="e.g. Blue Wallet" value={name} onChange={(e) => setName(e.target.value)} required />
+                            </div>
+                        </div>
+
+                        <div className="input-group">
+                            <label className="input-label">Type</label>
+                            <select className="form-control" value={type} onChange={(e) => setType(e.target.value)} required>
+                                <option value="lost">I Lost This</option>
+                                <option value="found">I Found This</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div className="input-group">
-                        <label>Image (Max 10MB)</label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFileChange}
-                            style={{ padding: '0.8rem' }}
-                        />
+                    <div className="input-group" style={{ marginTop: '1.5rem' }}>
+                        <label className="input-label">Location Found/Lost</label>
+                        <div style={{ position: 'relative' }}>
+                            <MapPin size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                            <input className="form-control" style={{ paddingLeft: '3rem' }} placeholder="e.g. Library 2nd Floor" value={location} onChange={(e) => setLocation(e.target.value)} required />
+                        </div>
                     </div>
 
-                    <div className="input-group">
-                        <label>Type</label>
-                        <select value={type} onChange={(e) => setType(e.target.value)} className="input-field" style={{ width: '100%', padding: '1rem', background: 'rgba(15, 23, 42, 0.5)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '0.75rem', color: 'white' }}>
-                            <option value="lost" style={{ background: '#1e1b4b' }}>I Lost This</option>
-                            <option value="found" style={{ background: '#1e1b4b' }}>I Found This</option>
-                        </select>
+                    <div className="input-group" style={{ marginTop: '1.5rem' }}>
+                        <label className="input-label">Description</label>
+                        <textarea className="form-control" style={{ minHeight: '120px' }} placeholder="Color, brand, distinguishing marks, contents..." value={description} onChange={(e) => setDescription(e.target.value)} required />
                     </div>
 
-                    <div className="input-group">
-                        <label>Location</label>
-                        <input placeholder="e.g. Library, Cafe" value={location} onChange={(e) => setLocation(e.target.value)} required />
+                    <div className="input-group" style={{ marginTop: '1.5rem' }}>
+                        <label className="input-label">Upload Image (Max 10MB)</label>
+                        <div style={{ border: '2px dashed var(--border)', borderRadius: '12px', padding: '2rem', textAlign: 'center', background: 'var(--bg-main)', cursor: 'pointer', position: 'relative' }}>
+                            <input type="file" accept="image/*" onChange={handleFileChange} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }} />
+                            <Upload size={32} style={{ color: 'var(--primary)', marginBottom: '1rem' }} />
+                            <p style={{ margin: 0, fontWeight: '500' }}>{image ? image.name : 'Click or drop to upload photo'}</p>
+                            <p style={{ margin: '0.5rem 0 0', fontSize: '0.875rem', color: 'var(--text-muted)' }}>JPG, PNG, GIF files only</p>
+                        </div>
                     </div>
 
-                    <div className="input-group">
-                        <label>Description</label>
-                        <textarea
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            placeholder="Color, brand, distinguishing marks..."
-                            required
-                            style={{ width: '100%', padding: '1rem', background: 'rgba(15, 23, 42, 0.5)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '0.75rem', color: 'white', minHeight: '100px' }}
-                        />
-                    </div>
-
-                    <div className="input-group">
-                        <label>Contact Info</label>
-                        <div style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '1rem', borderRadius: '0.75rem', color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1rem', border: '1px solid rgba(255,255,255,0.1)' }}>
-                            Default: Email + Registration Number
+                    <div className="input-group" style={{ marginTop: '2rem' }}>
+                        <label className="input-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <Info size={16} color="var(--primary)" /> Contact Information
+                        </label>
+                        <div style={{ background: 'var(--bg-main)', padding: '1rem', borderRadius: '12px', fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
+                            Your registered Email and Registration ID will be automatically shared when someone views this report.
                         </div>
 
                         {!showPhoneInput ? (
-                            <button
-                                type="button"
-                                onClick={() => setShowPhoneInput(true)}
-                                className="btn"
-                                style={{ background: 'transparent', border: '1px dashed var(--primary)', color: 'var(--primary)', width: '100%', padding: '0.5rem' }}
-                            >
-                                + Add Phone Number (Recommended)
+                            <button type="button" onClick={() => setShowPhoneInput(true)} className="btn" style={{ width: '100%', borderStyle: 'dashed' }}>
+                                <Phone size={18} /> Add Contact Number (Optional)
                             </button>
                         ) : (
-                            <div className="input-group">
-                                <input
-                                    type="tel"
-                                    placeholder="Enter your phone number"
-                                    value={phone}
-                                    onChange={(e) => setPhone(e.target.value)}
-                                    style={{ marginTop: '0.5rem' }}
-                                />
+                            <div className="fade-in">
+                                <label className="input-label">Phone Number</label>
+                                <div style={{ position: 'relative' }}>
+                                    <Phone size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                                    <input type="tel" className="form-control" style={{ paddingLeft: '3rem' }} placeholder="+92 3XX XXXXXXX" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                                </div>
+                                <button type="button" onClick={() => setShowPhoneInput(false)} className="link" style={{ marginTop: '0.5rem', fontSize: '0.875rem' }}>Remove phone number</button>
                             </div>
                         )}
                     </div>
 
-                    <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }} disabled={loading}>
-                        {loading ? 'Submitting...' : 'Submit Report'}
+                    <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '3rem', height: '54px' }} disabled={loading}>
+                        {loading ? 'Submitting...' : (
+                            <>
+                                <Send size={20} /> Submit Report
+                            </>
+                        )}
                     </button>
                 </form>
             </div>

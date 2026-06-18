@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '../supabase'
 import { useNavigate, Link } from 'react-router-dom'
+import { MessageSquare, Mail, GraduationCap, Send, ArrowLeft } from 'lucide-react'
 
 export default function Feedback() {
     const [email, setEmail] = useState('')
@@ -16,7 +17,6 @@ export default function Feedback() {
         setStatus('')
 
         const { data: { user } } = await supabase.auth.getUser()
-
         if (!user) {
             navigate('/login')
             return
@@ -24,13 +24,11 @@ export default function Feedback() {
 
         const { error } = await supabase
             .from('feedback')
-            .insert([
-                {
-                    registration_no: regNo,
-                    email: email,
-                    message: message
-                }
-            ])
+            .insert([{
+                registration_no: regNo,
+                email: email,
+                message: message
+            }])
 
         if (error) {
             setStatus('Error: ' + error.message)
@@ -39,65 +37,62 @@ export default function Feedback() {
             setMessage('')
             setEmail('')
             setRegNo('')
-            setTimeout(() => navigate('/dashboard'), 2000)
+            setTimeout(() => navigate('/dashboard'), 3000)
         }
         setLoading(false)
     }
 
     return (
-        <div style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto' }}>
-            <Link to="/dashboard" className="link" style={{ marginBottom: '2rem', display: 'inline-block' }}>← Back to Dashboard</Link>
+        <div className="fade-in" style={{ maxWidth: '700px', margin: '0 auto' }}>
+            <Link to="/dashboard" className="btn" style={{ marginBottom: '2rem' }}>
+                <ArrowLeft size={18} /> Back to Dashboard
+            </Link>
 
             <div className="glass-card" style={{ padding: '3rem' }}>
-                <h2 className="text-center">Send a Message</h2>
-                <p className="text-center" style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>
-                    Enter your details and message below.
-                </p>
+                <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+                    <div style={{ background: 'rgba(99, 102, 241, 0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: 'var(--primary)' }}>
+                        <MessageSquare size={28} />
+                    </div>
+                    <h2>Send a Message</h2>
+                    <p style={{ color: 'var(--text-muted)' }}>Found a bug? Have a suggestion? We'd love to hear from you.</p>
+                </div>
 
-                {status && <div style={{
-                    padding: '1rem',
-                    borderRadius: '0.5rem',
-                    marginBottom: '1rem',
-                    background: status.includes('Success') ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                    color: status.includes('Success') ? 'var(--success)' : 'var(--error)'
-                }}>{status}</div>}
+                {status && (
+                    <div className={status.includes('Success') ? 'success-msg' : 'error-msg'} style={{ padding: '1rem', borderRadius: '8px', marginBottom: '2rem', border: '1px solid', textAlign: 'center', background: status.includes('Success') ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)' }}>
+                        {status}
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit}>
-                    <div className="input-group">
-                        <label>Registration Number</label>
-                        <input
-                            type="text"
-                            placeholder="e.g. FA23-BCS-133"
-                            value={regNo}
-                            onChange={(e) => setRegNo(e.target.value)}
-                            required
-                        />
+                    <div className="grid grid-2">
+                        <div className="input-group">
+                            <label className="input-label">Registration Number</label>
+                            <div style={{ position: 'relative' }}>
+                                <GraduationCap size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                                <input className="form-control" style={{ paddingLeft: '3rem' }} placeholder="FA23-BCS-133" value={regNo} onChange={(e) => setRegNo(e.target.value)} required />
+                            </div>
+                        </div>
+
+                        <div className="input-group">
+                            <label className="input-label">Email Address</label>
+                            <div style={{ position: 'relative' }}>
+                                <Mail size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                                <input type="email" className="form-control" style={{ paddingLeft: '3rem' }} placeholder="name@cuiatd.edu.pk" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="input-group">
-                        <label>Email Address</label>
-                        <input
-                            type="email"
-                            placeholder="yourname@cuiatd.edu.pk"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
+                    <div className="input-group" style={{ marginTop: '1.5rem' }}>
+                        <label className="input-label">Message</label>
+                        <textarea className="form-control" style={{ minHeight: '160px' }} placeholder="Type your message here..." value={message} onChange={(e) => setMessage(e.target.value)} required />
                     </div>
 
-                    <div className="input-group">
-                        <label>Message</label>
-                        <textarea
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            placeholder="How can we help you?"
-                            required
-                            style={{ width: '100%', padding: '1rem', background: 'rgba(15, 23, 42, 0.5)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '0.75rem', color: 'white', minHeight: '150px' }}
-                        />
-                    </div>
-
-                    <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }} disabled={loading}>
-                        {loading ? 'Sending...' : 'Send Message'}
+                    <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '2.5rem', height: '54px' }} disabled={loading}>
+                        {loading ? 'Sending...' : (
+                            <>
+                                <Send size={20} /> Send Message
+                            </>
+                        )}
                     </button>
                 </form>
             </div>

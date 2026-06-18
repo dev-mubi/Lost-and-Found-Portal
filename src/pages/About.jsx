@@ -1,23 +1,39 @@
 import { Link } from 'react-router-dom'
+import { Info, Target, HelpCircle, ArrowLeft } from 'lucide-react'
 
 export default function About() {
     return (
-        <div className="auth-container" style={{ alignItems: 'flex-start' }}>
-            <div className="glass-card" style={{ padding: '3rem', maxWidth: '800px', width: '100%' }}>
-                <Link to="/dashboard" className="link" style={{ marginBottom: '2rem', display: 'inline-block' }}>← Back</Link>
-                <h1>About Lost & Found Portal</h1>
-                <p style={{ marginTop: '1.5rem', color: 'var(--text-muted)' }}>
-                    Welcome to the specialized Lost and Found Portal for CUI. Our platform is designed to bridge the gap between finders and owners within the university campus.
+        <div className="fade-in" style={{ maxWidth: '800px', margin: '0 auto' }}>
+            <Link to="/dashboard" className="btn" style={{ marginBottom: '2rem' }}>
+                <ArrowLeft size={18} /> Back to Dashboard
+            </Link>
+
+            <div className="glass-card" style={{ padding: '3rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', color: 'var(--primary)' }}>
+                    <Info size={32} />
+                    <h1 style={{ margin: 0 }}>About the Portal</h1>
+                </div>
+
+                <p style={{ fontSize: '1.125rem', lineHeight: '1.6', color: 'var(--text-muted)', marginBottom: '2.5rem' }}>
+                    The CUI Lost & Found Portal is a dedicated platform designed to help students and staff within the university community safely recover lost items and report found belongings.
                 </p>
-                <h3 style={{ marginTop: '2rem' }}>Our Mission</h3>
-                <p>
-                    To create a transparent, efficient, and secure environment where students and staff can recover their lost belonging through community cooperation and digital tracking.
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem', color: 'var(--primary)' }}>
+                    <Target size={24} />
+                    <h3 style={{ margin: 0 }}>Our Mission</h3>
+                </div>
+                <p style={{ marginBottom: '2.5rem', lineHeight: '1.6' }}>
+                    Our mission is to foster a culture of honesty and community support at CUI. By providing a centralized digital hub, we make it easier, faster, and more secure to reconnect lost items with their rightful owners.
                 </p>
-                <h3 style={{ marginTop: '2rem' }}>How it Works</h3>
-                <ul style={{ paddingLeft: '1.5rem', marginTop: '1rem' }}>
-                    <li>Report any item you find with a photo and location.</li>
-                    <li>Browse the lost items gallery if you've misplaced something.</li>
-                    <li>Connect safely with students via verified university email and registration details.</li>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem', color: 'var(--primary)' }}>
+                    <HelpCircle size={24} />
+                    <h3 style={{ margin: 0 }}>How it Works</h3>
+                </div>
+                <ul style={{ paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', lineHeight: '1.6' }}>
+                    <li><strong>Report:</strong> If you find an item, upload a photo and mention where you found it.</li>
+                    <li><strong>Search:</strong> If you lost an item, browse the "Lost Items" gallery or search for specific keywords.</li>
+                    <li><strong>Claim:</strong> Coordinate a safe meeting on campus to verify and return the item.</li>
                 </ul>
             </div>
         </div>

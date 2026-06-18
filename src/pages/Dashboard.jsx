@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
 import { useNavigate, Link } from 'react-router-dom'
+import { Plus, Search, CheckCircle, MessageSquare, List } from 'lucide-react'
 
 export default function Dashboard() {
     const [user, setUser] = useState(null)
@@ -15,99 +16,72 @@ export default function Dashboard() {
                 setUser(session.user)
             }
         }
-
         getSession()
-
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            if (!session) {
-                navigate('/login')
-            } else {
-                setUser(session.user)
-            }
-        })
-
-        return () => subscription.unsubscribe()
     }, [navigate])
 
-    const handleLogout = async () => {
-        await supabase.auth.signOut()
-        navigate('/login')
-    }
-
-    if (!user) return <div className="text-center mt-4">Loading...</div>
+    if (!user) return <div className="text-center" style={{ marginTop: '4rem' }}>Loading Dashboard...</div>
 
     return (
-        <div style={{ padding: '2rem' }}>
-            <nav className="glass-card" style={{ padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderRadius: '1rem' }}>
-                <h2 style={{ margin: 0, fontSize: '1.5rem', color: 'var(--primary)' }}>Lost & Found Portal</h2>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                    <Link to="/profile" className="link" style={{ fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <img
-                            src={user.user_metadata?.avatar_url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + user.email}
-                            alt="Avatar"
-                            style={{ width: '32px', height: '32px', borderRadius: '50%', border: '1px solid var(--primary)' }}
-                        />
-                        View Profile
-                    </Link>
-                    <button onClick={handleLogout} className="btn" style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '0.5rem 1rem' }}>
-                        Logout
-                    </button>
-                </div>
-            </nav>
-
-            <main>
-                <header className="glass-card" style={{ padding: '3rem', textAlign: 'center', marginBottom: '2rem' }}>
-                    <h1>Welcome to the Dashboard</h1>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', marginBottom: '2.5rem' }}>
-                        The central hub for reporting and finding lost items at CUI.
-                    </p>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', maxWidth: '900px', margin: '0 auto' }}>
-                        <Link to="/report" className="btn btn-primary" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            ➕ Report Item
-                        </Link>
-                        <Link to="/lost" className="btn" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            🔍 Lost Items
-                        </Link>
-                        <Link to="/found" className="btn" style={{ background: 'rgba(34, 197, 94, 0.1)', color: '#22c55e', border: '1px solid rgba(34, 197, 94, 0.2)', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            ✅ Found Items
-                        </Link>
-                        <Link to="/feedback" className="btn" style={{ background: 'rgba(255, 255, 255, 0.05)', color: 'var(--text-main)', border: '1px solid rgba(255, 255, 255, 0.1)', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            💬 Feedback
-                        </Link>
-                    </div>
-                </header>
-
-                <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-                    <div className="glass-card" style={{ padding: '2rem' }}>
-                        <h3>Your Recent Activity</h3>
-                        <p style={{ color: 'var(--text-muted)' }}>You haven't posted any items yet.</p>
-                    </div>
-                    <div className="glass-card" style={{ padding: '2rem' }}>
-                        <h3>Recent Found Items</h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            <div style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                <strong>Blue Backpack</strong>
-                                <p style={{ margin: '0.25rem 0', fontSize: '0.875rem', color: 'var(--text-muted)' }}>Found in Cafeteria - 2 hours ago</p>
-                            </div>
-                            <div style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                <strong>iPhone 13 (Black)</strong>
-                                <p style={{ margin: '0.25rem 0', fontSize: '0.875rem', color: 'var(--text-muted)' }}>Found in Library - 5 hours ago</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </main>
-
-            <footer style={{ marginTop: '4rem', padding: '2rem 0', borderTop: '1px solid var(--glass-border)', textAlign: 'center' }}>
-                <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', marginBottom: '1rem', flexWrap: 'wrap' }}>
-                    <Link to="/about" className="link">About</Link>
-                    <Link to="/terms" className="link">Terms of Service</Link>
-                    <Link to="/contact" className="link">Contact Us</Link>
-                </div>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-                    © 2026 Lost & Found Portal - CUI Abbottabad
+        <div className="fade-in">
+            <header className="glass-card" style={{ padding: '3rem', textAlign: 'center', marginBottom: '3rem' }}>
+                <h1 style={{ marginBottom: '1rem' }}>Welcome Back, {user.user_metadata?.full_name?.split(' ')[0] || 'Member'}!</h1>
+                <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto 2rem' }}>
+                    What would you like to do today? You can report a new item or browse the community listings.
                 </p>
-            </footer>
+
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                    <Link to="/report" className="btn btn-primary" style={{ padding: '1rem 2rem' }}>
+                        <Plus size={20} /> Report an Item
+                    </Link>
+                    <Link to="/feedback" className="btn" style={{ padding: '1rem 2rem' }}>
+                        <MessageSquare size={20} /> Send a Message
+                    </Link>
+                </div>
+            </header>
+
+            <div className="grid grid-3">
+                <div className="glass-card" style={{ textAlign: 'center', cursor: 'pointer' }} onClick={() => navigate('/lost')}>
+                    <div style={{ background: 'rgba(239, 68, 68, 0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: '#ef4444' }}>
+                        <Search size={28} />
+                    </div>
+                    <h2>Lost Items</h2>
+                    <p style={{ margin: '1rem 0' }}>Browse items that have been reported as lost by other students.</p>
+                    <Link to="/lost" className="link">View Gallery →</Link>
+                </div>
+
+                <div className="glass-card" style={{ textAlign: 'center', cursor: 'pointer' }} onClick={() => navigate('/found')}>
+                    <div style={{ background: 'rgba(34, 197, 94, 0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: '#22c55e' }}>
+                        <CheckCircle size={28} />
+                    </div>
+                    <h2>Found Items</h2>
+                    <p style={{ margin: '1rem 0' }}>Check the list of items found on campus to see if yours is there.</p>
+                    <Link to="/found" className="link">View Gallery →</Link>
+                </div>
+
+                <div className="glass-card" style={{ textAlign: 'center', cursor: 'pointer' }} onClick={() => navigate('/report')}>
+                    <div style={{ background: 'rgba(99, 102, 241, 0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: 'var(--primary)' }}>
+                        <Plus size={28} />
+                    </div>
+                    <h2>New Report</h2>
+                    <p style={{ margin: '1rem 0' }}>Quickly submit a report for a lost or found item with details and images.</p>
+                    <Link to="/report" className="link">Submit Now →</Link>
+                </div>
+            </div>
+
+            <section style={{ marginTop: '3rem' }}>
+                <div className="glass-card">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+                        <List size={24} style={{ color: 'var(--primary)' }} />
+                        <h2 style={{ margin: 0 }}>Community Guidelines</h2>
+                    </div>
+                    <ul style={{ color: 'var(--text-muted)', paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        <li>Always upload a clear photo of the item for faster identification.</li>
+                        <li>Provide accurate locations (e.g., LSC Floor 2, Cafeteria Table 5).</li>
+                        <li>Verification will be required when claiming high-value items.</li>
+                        <li>Respect privacy and coordinate safely on campus.</li>
+                    </ul>
+                </div>
+            </section>
         </div>
     )
 }

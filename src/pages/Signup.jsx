@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '../supabase'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
+import { Eye, EyeOff, Mail, Lock, User, GraduationCap, School, ArrowRight } from 'lucide-react'
 
 export default function Signup() {
     const [email, setEmail] = useState('')
@@ -22,18 +23,13 @@ export default function Signup() {
         setError(null)
         setMessage(null)
 
-        // University email validation
         const emailRegex = /^[A-Z0-9.-]+@cuiatd\.edu\.pk$/i
-
         if (!emailRegex.test(email)) {
-            setError(
-                'Please use a valid university email (e.g., FA23-BCS-133@cuiatd.edu.pk)'
-            )
+            setError('Please use a valid university email (e.g., FA23-BCS-133@cuiatd.edu.pk)')
             setLoading(false)
             return
         }
 
-        // Create user in Supabase Authentication
         const { data, error } = await supabase.auth.signUp({
             email,
             password,
@@ -53,20 +49,17 @@ export default function Signup() {
             return
         }
 
-        // Save additional user details in the profiles table
         if (data.user) {
             const { error: profileError } = await supabase
                 .from('profiles')
-                .insert([
-                    {
-                        id: data.user.id,
-                        full_name: fullName,
-                        registration_no: regNo,
-                        semester: sem,
-                        department: dept,
-                        role: 'student',
-                    },
-                ])
+                .insert([{
+                    id: data.user.id,
+                    full_name: fullName,
+                    registration_no: regNo,
+                    semester: sem,
+                    department: dept,
+                    role: 'student',
+                }])
 
             if (profileError) {
                 setError(profileError.message)
@@ -75,222 +68,136 @@ export default function Signup() {
             }
         }
 
-        setMessage(
-            'Registration successful! Please check your email for the verification link. Click the link to verify your account, and then you can login to the portal.'
-        )
-
-        setTimeout(() => {
-            navigate('/login')
-        }, 3000)
-
+        setMessage('Registration successful! Please check your email for the verification link. Click the link to verify your account, and then you can login to the portal.')
+        setTimeout(() => navigate('/login'), 5000)
         setLoading(false)
     }
 
     return (
-        <div className="auth-container">
-            <div
-                className="auth-box glass-card"
-                style={{ maxWidth: '600px' }}
-            >
-                <h2 className="text-center">Create Account</h2>
+        <div className="auth-page fade-in">
+            <div className="text-center" style={{ marginBottom: '2.5rem' }}>
+                <p style={{ letterSpacing: '2px', textTransform: 'uppercase', fontSize: '0.8rem', fontWeight: '700', color: 'var(--primary)', marginBottom: '0.5rem' }}>Welcome to</p>
+                <h1>Lost & Found Portal</h1>
+            </div>
 
-                <p
-                    className="text-center"
-                    style={{
-                        color: 'var(--text-muted)',
-                        marginBottom: '2rem',
-                    }}
-                >
-                    Join the Lost and Found Portal
-                </p>
+            <div className="auth-card" style={{ maxWidth: '600px' }}>
+                <h2 style={{ marginBottom: '0.5rem' }}>Create Account</h2>
+                <p style={{ marginBottom: '2rem', color: 'var(--text-muted)' }}>Join the university community</p>
 
-                {error && (
-                    <div className="error-msg">
-                        {error}
-                    </div>
-                )}
-
-                {message && (
-                    <div
-                        style={{
-                            color: 'var(--success)',
-                            marginBottom: '1rem',
-                            fontSize: '1.1rem',
-                        }}
-                    >
-                        {message}
-                    </div>
-                )}
+                {error && <div className="error-msg" style={{ background: 'rgba(239, 68, 68, 0.1)', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid var(--error)' }}>{error}</div>}
+                {message && <div className="success-msg" style={{ background: 'rgba(34, 197, 94, 0.1)', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid var(--success)', color: 'var(--success)' }}>{message}</div>}
 
                 <form onSubmit={handleSignup}>
                     <div className="input-group">
-                        <label>Full Name</label>
-                        <input
-                            type="text"
-                            placeholder="Enter your full name"
-                            value={fullName}
-                            onChange={(e) =>
-                                setFullName(e.target.value)
-                            }
-                            required
-                        />
-                    </div>
-
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: '1fr 1fr',
-                            gap: '1.5rem',
-                        }}
-                    >
-                        <div className="input-group">
-                            <label>Registration Number</label>
+                        <label className="input-label">Full Name</label>
+                        <div style={{ position: 'relative' }}>
+                            <User size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                             <input
-                                type="text"
-                                placeholder="FA23-BCS-133"
-                                value={regNo}
-                                onChange={(e) =>
-                                    setRegNo(e.target.value)
-                                }
+                                className="form-control"
+                                placeholder="Enter your full name"
+                                style={{ paddingLeft: '3rem' }}
+                                value={fullName}
+                                onChange={(e) => setFullName(e.target.value)}
                                 required
                             />
                         </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                        <div className="input-group">
+                            <label className="input-label">Registration No</label>
+                            <div style={{ position: 'relative' }}>
+                                <GraduationCap size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                                <input
+                                    className="form-control"
+                                    placeholder="FA23-BCS-133"
+                                    style={{ paddingLeft: '3rem' }}
+                                    value={regNo}
+                                    onChange={(e) => setRegNo(e.target.value)}
+                                    required
+                                />
+                            </div>
+                        </div>
 
                         <div className="input-group">
-                            <label>Semester</label>
+                            <label className="input-label">Semester</label>
                             <select
+                                className="form-control"
                                 value={sem}
-                                onChange={(e) =>
-                                    setSem(e.target.value)
-                                }
+                                onChange={(e) => setSem(e.target.value)}
                                 required
-                                style={{
-                                    width: '100%',
-                                    padding: '1rem',
-                                    background:
-                                        'rgba(15, 23, 42, 0.5)',
-                                    border:
-                                        '1px solid rgba(255, 255, 255, 0.1)',
-                                    borderRadius: '0.75rem',
-                                    color: 'white',
-                                    fontSize: '1.1rem',
-                                    appearance: 'none',
-                                    cursor: 'pointer',
-                                }}
                             >
-                                <option
-                                    value=""
-                                    disabled
-                                    style={{
-                                        background: '#1e1b4b',
-                                    }}
-                                >
-                                    Select
-                                </option>
-
-                                {[1, 2, 3, 4, 5, 6, 7, 8].map(
-                                    (n) => (
-                                        <option
-                                            key={n}
-                                            value={n}
-                                            style={{
-                                                background:
-                                                    '#1e1b4b',
-                                            }}
-                                        >
-                                            {n}
-                                        </option>
-                                    )
-                                )}
+                                <option value="" disabled>Select</option>
+                                {[1, 2, 3, 4, 5, 6, 7, 8].map(n => <option key={n} value={n}>{n}</option>)}
                             </select>
                         </div>
                     </div>
 
                     <div className="input-group">
-                        <label>Department</label>
-                        <input
-                            type="text"
-                            placeholder="Computer Science"
-                            value={dept}
-                            onChange={(e) =>
-                                setDept(e.target.value)
-                            }
-                            required
-                        />
-                    </div>
-
-                    <div className="input-group">
-                        <label>Email Address</label>
-                        <input
-                            type="email"
-                            placeholder="FA23-BCS-133@cuiatd.edu.pk"
-                            value={email}
-                            onChange={(e) =>
-                                setEmail(e.target.value)
-                            }
-                            required
-                        />
-                    </div>
-
-                    <div className="input-group">
-                        <label>Password</label>
+                        <label className="input-label">Department</label>
                         <div style={{ position: 'relative' }}>
+                            <School size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                            <input
+                                className="form-control"
+                                placeholder="e.g. Computer Science"
+                                style={{ paddingLeft: '3rem' }}
+                                value={dept}
+                                onChange={(e) => setDept(e.target.value)}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="input-group">
+                        <label className="input-label">Email Address</label>
+                        <div style={{ position: 'relative' }}>
+                            <Mail size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                            <input
+                                type="email"
+                                className="form-control"
+                                placeholder="name@cuiatd.edu.pk"
+                                style={{ paddingLeft: '3rem' }}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="input-group">
+                        <label className="input-label">Password</label>
+                        <div style={{ position: 'relative' }}>
+                            <Lock size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                             <input
                                 type={showPassword ? "text" : "password"}
+                                className="form-control"
                                 placeholder="••••••••"
+                                style={{ paddingLeft: '3rem', paddingRight: '3.5rem' }}
                                 value={password}
-                                onChange={(e) =>
-                                    setPassword(e.target.value)
-                                }
+                                onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                style={{
-                                    position: 'absolute',
-                                    right: '1rem',
-                                    top: '50%',
-                                    transform: 'translateY(-50%)',
-                                    background: 'none',
-                                    border: 'none',
-                                    color: 'var(--primary)',
-                                    cursor: 'pointer',
-                                    fontSize: '0.8rem',
-                                    fontWeight: '600'
-                                }}
+                                style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
                             >
-                                {showPassword ? 'HIDE' : 'SHOW'}
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                             </button>
                         </div>
                     </div>
 
-                    <button
-                        type="submit"
-                        className="btn btn-primary"
-                        style={{
-                            width: '100%',
-                            marginTop: '1rem',
-                        }}
-                        disabled={loading}
-                    >
-                        {loading
-                            ? 'Creating account...'
-                            : 'Sign Up'}
+                    <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem', height: '50px' }} disabled={loading}>
+                        {loading ? 'Creating...' : (
+                            <>
+                                Create Account <ArrowRight size={18} />
+                            </>
+                        )}
                     </button>
                 </form>
 
-                <p
-                    className="text-center mt-4"
-                    style={{ fontSize: '1rem' }}
-                >
-                    Already have an account?{' '}
-                    <Link
-                        to="/login"
-                        className="link"
-                    >
-                        Sign In
-                    </Link>
+                <p className="text-center" style={{ marginTop: '2rem', fontSize: '0.9375rem', color: 'var(--text-muted)' }}>
+                    Already have an account? <Link to="/login" className="link">Sign In</Link>
                 </p>
             </div>
         </div>

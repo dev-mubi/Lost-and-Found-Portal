@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
 import { useNavigate, Link } from 'react-router-dom'
+import { User, Mail, GraduationCap, School, Calendar, Edit2, Save, X, Trash2, ArrowLeft } from 'lucide-react'
 
 export default function Profile() {
     const [user, setUser] = useState(null)
@@ -57,26 +58,16 @@ export default function Profile() {
         setUpdating(false)
     }
 
-    const handleLogout = async () => {
-        await supabase.auth.signOut()
-        navigate('/login')
-    }
-
     const handleDeleteAccount = async () => {
-        if (window.confirm('CRITICAL: Are you sure you want to delete your account? This will remove all your data permanently. This action cannot be undone.')) {
+        if (window.confirm('CRITICAL: Are you sure you want to delete your account? This action cannot be undone.')) {
             setUpdating(true)
             try {
-                // We call an RPC function. You MUST add this function in Supabase SQL Editor (check my instructions).
                 const { error } = await supabase.rpc('delete_user_account')
-
                 if (error) throw error
-
-                // Sign out locally
                 await supabase.auth.signOut()
                 navigate('/login')
-                alert('Your account has been successfully deleted.')
+                alert('Your account has been deleted.')
             } catch (error) {
-                console.error(error)
                 setMessage({ type: 'error', content: 'Deletion failed: ' + error.message })
             } finally {
                 setUpdating(false)
@@ -84,121 +75,105 @@ export default function Profile() {
         }
     }
 
-    if (loading) return <div className="text-center mt-4">Loading Profile...</div>
+    if (loading) return <div className="text-center" style={{ marginTop: '4rem' }}>Loading Profile...</div>
 
     return (
-        <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
-            <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Link to="/dashboard" className="link" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    ← Back to Dashboard
-                </Link>
-                <button onClick={handleLogout} className="btn" style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '0.5rem 1rem' }}>
-                    Logout
-                </button>
-            </div>
+        <div className="fade-in" style={{ maxWidth: '800px', margin: '0 auto' }}>
+            <Link to="/dashboard" className="btn" style={{ marginBottom: '2rem' }}>
+                <ArrowLeft size={18} /> Back to Dashboard
+            </Link>
 
             <div className="glass-card" style={{ padding: '3rem' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '3rem' }}>
-                    <img
-                        src={avatarUrl}
-                        alt="Profile"
-                        style={{ width: '120px', height: '120px', borderRadius: '50%', objectFit: 'cover', border: '4px solid var(--primary)', boxShadow: '0 0 20px rgba(99, 102, 241, 0.3)', marginBottom: '1.5rem' }}
-                    />
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '3rem', textAlign: 'center' }}>
+                    <div style={{ position: 'relative' }}>
+                        <img
+                            src={avatarUrl}
+                            alt="Profile"
+                            style={{ width: '120px', height: '120px', borderRadius: '50%', objectFit: 'cover', border: '4px solid var(--primary)', boxShadow: 'var(--shadow)', marginBottom: '1.5rem' }}
+                        />
+                    </div>
                     <h1>{fullName || 'User Profile'}</h1>
-                    <p style={{ color: 'var(--text-muted)' }}>{user.email}</p>
+                    <p style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>
+                        <Mail size={16} /> {user.email}
+                    </p>
+
                     {!isEditing && (
-                        <button
-                            onClick={() => setIsEditing(true)}
-                            className="btn btn-primary"
-                            style={{ marginTop: '1.5rem', background: 'transparent', border: '1px solid var(--primary)', color: 'var(--primary)' }}
-                        >
-                            Edit Profile
+                        <button onClick={() => setIsEditing(true)} className="btn btn-primary" style={{ marginTop: '1.5rem' }}>
+                            <Edit2 size={18} /> Edit Profile
                         </button>
                     )}
                 </div>
 
                 {message.content && (
-                    <div style={{
-                        padding: '1rem',
-                        borderRadius: '0.75rem',
-                        marginBottom: '2rem',
-                        background: message.type === 'success' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                        color: message.type === 'success' ? 'var(--success)' : 'var(--error)',
-                        border: `1px solid ${message.type === 'success' ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)'}`
-                    }}>
+                    <div className={message.type === 'success' ? 'success-msg' : 'error-msg'} style={{ padding: '1rem', borderRadius: '8px', marginBottom: '2rem', border: '1px solid', textAlign: 'center', background: message.type === 'success' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)' }}>
                         {message.content}
                     </div>
                 )}
 
-                {!isEditing ? (
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-                        <div className="detail-group">
-                            <label style={{ color: 'var(--text-muted)', fontSize: '0.9rem', display: 'block', marginBottom: '0.5rem' }}>Full Name</label>
-                            <div style={{ fontSize: '1.2rem', fontWeight: '500' }}>{fullName}</div>
-                        </div>
-                        <div className="detail-group">
-                            <label style={{ color: 'var(--text-muted)', fontSize: '0.9rem', display: 'block', marginBottom: '0.5rem' }}>Registration Number</label>
-                            <div style={{ fontSize: '1.2rem', fontWeight: '500' }}>{regNo}</div>
-                        </div>
-                        <div className="detail-group">
-                            <label style={{ color: 'var(--text-muted)', fontSize: '0.9rem', display: 'block', marginBottom: '0.5rem' }}>Semester</label>
-                            <div style={{ fontSize: '1.2rem', fontWeight: '500' }}>{sem}</div>
-                        </div>
-                        <div className="detail-group">
-                            <label style={{ color: 'var(--text-muted)', fontSize: '0.9rem', display: 'block', marginBottom: '0.5rem' }}>Department</label>
-                            <div style={{ fontSize: '1.2rem', fontWeight: '500' }}>{dept}</div>
-                        </div>
-                    </div>
-                ) : (
+                {isEditing ? (
                     <form onSubmit={handleUpdate}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                        <div className="grid grid-2">
                             <div className="input-group">
-                                <label>Full Name</label>
-                                <input value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+                                <label className="input-label">Full Name</label>
+                                <input className="form-control" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
                             </div>
                             <div className="input-group">
-                                <label>Registration Number</label>
-                                <input value={regNo} onChange={(e) => setRegNo(e.target.value)} required />
+                                <label className="input-label">Registration No</label>
+                                <input className="form-control" value={regNo} onChange={(e) => setRegNo(e.target.value)} required />
                             </div>
                             <div className="input-group">
-                                <label>Semester</label>
-                                <select
-                                    value={sem}
-                                    onChange={(e) => setSem(e.target.value)}
-                                    required
-                                    style={{ width: '100%', padding: '1rem', background: 'rgba(15, 23, 42, 0.5)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '0.75rem', color: 'white', fontSize: '1.1rem' }}
-                                >
-                                    {[1, 2, 3, 4, 5, 6, 7, 8].map(n => <option key={n} value={n} style={{ background: '#1e1b4b' }}>{n}</option>)}
+                                <label className="input-label">Semester</label>
+                                <select className="form-control" value={sem} onChange={(e) => setSem(e.target.value)} required>
+                                    {[1, 2, 3, 4, 5, 6, 7, 8].map(n => <option key={n} value={n}>{n}</option>)}
                                 </select>
                             </div>
                             <div className="input-group">
-                                <label>Department</label>
-                                <input value={dept} onChange={(e) => setDept(e.target.value)} required />
-                            </div>
-                            <div className="input-group" style={{ gridColumn: 'span 2' }}>
-                                <label>Avatar URL</label>
-                                <input value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} placeholder="https://example.com/avatar.png" />
+                                <label className="input-label">Department</label>
+                                <input className="form-control" value={dept} onChange={(e) => setDept(e.target.value)} required />
                             </div>
                         </div>
+                        <div className="input-group" style={{ marginTop: '1rem' }}>
+                            <label className="input-label">Avatar URL</label>
+                            <input className="form-control" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} placeholder="https://example.com/photo.jpg" />
+                        </div>
 
-                        <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+                        <div style={{ display: 'flex', gap: '1rem', marginTop: '2.5rem' }}>
                             <button type="submit" className="btn btn-primary" style={{ flex: 1 }} disabled={updating}>
-                                {updating ? 'Saving...' : 'Save Changes'}
+                                <Save size={18} /> {updating ? 'Saving...' : 'Save Changes'}
                             </button>
-                            <button type="button" onClick={() => setIsEditing(false)} className="btn" style={{ flex: 1, background: 'rgba(255,255,255,0.05)' }}>
-                                Cancel
+                            <button type="button" onClick={() => setIsEditing(false)} className="btn" style={{ flex: 1 }}>
+                                <X size={18} /> Cancel
                             </button>
                         </div>
                     </form>
+                ) : (
+                    <div className="grid grid-2" style={{ marginTop: '1rem' }}>
+                        <div style={{ background: 'var(--bg-main)', padding: '1.5rem', borderRadius: '12px' }}>
+                            <p style={{ fontSize: '0.875rem', marginBottom: '0.5rem' }}>Registration Number</p>
+                            <div style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                <GraduationCap size={20} color="var(--primary)" /> {regNo}
+                            </div>
+                        </div>
+                        <div style={{ background: 'var(--bg-main)', padding: '1.5rem', borderRadius: '12px' }}>
+                            <p style={{ fontSize: '0.875rem', marginBottom: '0.5rem' }}>Current Semester</p>
+                            <div style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                <Calendar size={20} color="var(--primary)" /> Semester {sem}
+                            </div>
+                        </div>
+                        <div style={{ background: 'var(--bg-main)', padding: '1.5rem', borderRadius: '12px', gridColumn: 'span 2' }}>
+                            <p style={{ fontSize: '0.875rem', marginBottom: '0.5rem' }}>Department / Program</p>
+                            <div style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                <School size={20} color="var(--primary)" /> {dept}
+                            </div>
+                        </div>
+                    </div>
                 )}
 
-                <div style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)', textAlign: 'center' }}>
-                    <h3 style={{ color: '#ef4444', marginBottom: '1rem' }}>Danger Zone</h3>
-                    <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-                        Once you delete your account, there is no going back. Please be certain.
-                    </p>
-                    <button onClick={handleDeleteAccount} className="btn" style={{ background: 'transparent', color: '#ef4444', border: '1px solid #ef4444' }}>
-                        Delete Account
+                <div style={{ marginTop: '4rem', paddingTop: '3rem', borderTop: '1px solid var(--border)', textAlign: 'center' }}>
+                    <h3 style={{ color: 'var(--error)', marginBottom: '0.5rem' }}>Danger Zone</h3>
+                    <p style={{ marginBottom: '2rem' }}>Once you delete your account, all your data will be permanently removed.</p>
+                    <button onClick={handleDeleteAccount} className="btn" style={{ borderColor: 'var(--error)', color: 'var(--error)' }}>
+                        <Trash2 size={18} /> Delete Account
                     </button>
                 </div>
             </div>
