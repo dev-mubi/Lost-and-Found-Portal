@@ -13,7 +13,7 @@ export default function Contact() {
                     <MessageCircle size={32} />
                 </div>
                 <h1>Contact the Developer</h1>
-                <p style={{ color: 'var(--text-muted)', marginBottom: '3rem' }}>Have questions or want to collaborate? Reach out through any of these platforms.</p>
+                <p style={{ color: 'var(--text-muted)', marginBottom: '3rem' }}>Have questions? Reach out through any of these platforms.</p>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                     <a href="mailto:wafaamjad058@gmail.com" className="glass-card" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', textDecoration: 'none', transition: 'var(--transition)' }}>

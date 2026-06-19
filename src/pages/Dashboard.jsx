@@ -23,8 +23,8 @@ export default function Dashboard() {
 
     return (
         <div className="fade-in">
-            <header className="glass-card" style={{ padding: '3rem', textAlign: 'center', marginBottom: '3rem' }}>
-                <h1 style={{ marginBottom: '1rem' }}>Welcome Back, {user.user_metadata?.full_name?.split(' ')[0] || 'Member'}!</h1>
+            <header className="glass-card" style={{ textAlign: 'center', marginBottom: '3rem' }}>
+                <h1 style={{ marginBottom: '1rem' }}>Welcome {user.user_metadata?.full_name?.split(' ')[0] || 'Member'}!</h1>
                 <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto 2rem' }}>
                     What would you like to do today? You can report a new item or browse the community listings.
                 </p>
@@ -76,7 +76,7 @@ export default function Dashboard() {
                     </div>
                     <ul style={{ color: 'var(--text-muted)', paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                         <li>Always upload a clear photo of the item for faster identification.</li>
-                        <li>Provide accurate locations (e.g., LSC Floor 2, Cafeteria Table 5).</li>
+                        <li>Provide accurate locations (e.g. S102 , Canteen , Library(C-Block)).</li>
                         <li>Verification will be required when claiming high-value items.</li>
                         <li>Respect privacy and coordinate safely on campus.</li>
                     </ul>

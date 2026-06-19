@@ -138,7 +138,7 @@ export default function Report() {
                 <ArrowLeft size={18} /> Back to Dashboard
             </Link>
 
-            <div className="glass-card" style={{ padding: '3rem' }}>
+            <div className="glass-card">
                 <h2 style={{ marginBottom: '0.5rem' }}>Report an Item</h2>
                 <p style={{ color: 'var(--text-muted)', marginBottom: '2.5rem' }}>
                     Provide accurate details to help the community.

@@ -102,7 +102,7 @@ export default function Profile() {
                 <ArrowLeft size={18} /> Back to Dashboard
             </Link>
 
-            <div className="glass-card" style={{ padding: '3rem' }}>
+            <div className="glass-card">
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '3rem', textAlign: 'center' }}>
                     <div style={{ position: 'relative' }}>
                         <img
@@ -179,7 +179,7 @@ export default function Profile() {
                                 <Calendar size={20} color="var(--primary)" /> Semester {sem}
                             </div>
                         </div>
-                        <div style={{ background: 'var(--bg-main)', padding: '1.5rem', borderRadius: '12px', gridColumn: 'span 2' }}>
+                        <div className="span-2" style={{ background: 'var(--bg-main)', padding: '1.5rem', borderRadius: '12px' }}>
                             <p style={{ fontSize: '0.875rem', marginBottom: '0.5rem' }}>Department / Program</p>
                             <div style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                                 <School size={20} color="var(--primary)" /> {dept}
