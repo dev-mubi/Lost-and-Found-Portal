@@ -23,13 +23,15 @@ export default function Feedback() {
         }
 
         const { error } = await supabase
-            .from('feedback')
-            .insert([{
-                registration_no: regNo,
-                email: email,
-                message: message
-            }])
-
+            .from("feedback")
+            .insert([
+                {
+                    user_id: user.id,
+                    registration_no: user.user_metadata.registration_no,
+                    email: user.email,
+                    message: message
+                }
+            ])
         if (error) {
             setStatus('Error: ' + error.message)
         } else {

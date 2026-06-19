@@ -28,64 +28,90 @@ export default function Report() {
     }
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        setLoading(true)
-        setMessage('')
+        e.preventDefault();
+        setLoading(true);
+        setMessage('');
 
         try {
-            const { data: { user } } = await supabase.auth.getUser()
+            const {
+                data: { user },
+            } = await supabase.auth.getUser();
+
             if (!user) {
-                navigate('/login')
-                return
+                navigate('/login');
+                return;
             }
 
-            let imageUrl = null
+            // Upload image to Supabase Storage
+            let imageUrl = null;
 
             if (image) {
-                const fileExt = image.name.split('.').pop()
-                const fileName = `${Math.random()}.${fileExt}`
-                const filePath = `${user.id}/${fileName}`
+                const fileExt = image.name.split('.').pop();
+                const fileName = `${Date.now()}-${Math.random()}.${fileExt}`;
+                const filePath = `${user.id}/${fileName}`;
 
                 const { error: uploadError } = await supabase.storage
-                    .from('item-images')
-                    .upload(filePath, image)
+                    .from('lost-found-image')
+                    .upload(filePath, image);
 
-                if (uploadError) throw uploadError
+                if (uploadError) throw uploadError;
 
-                const { data: { publicUrl } } = supabase.storage
-                    .from('item-images')
-                    .getPublicUrl(filePath)
+                const { data } = supabase.storage
+                    .from('lost-found-image')
+                    .getPublicUrl(filePath);
 
-                imageUrl = publicUrl
+                imageUrl = data.publicUrl;
             }
 
-            const defaultContact = `${user.email} (${user.user_metadata?.registration_no || 'N/A'})`
-            const finalContact = showPhoneInput && phone ? `${defaultContact} | Phone: ${phone}` : defaultContact
+            // Contact information
+            const defaultContact = `${user.email} (${user.user_metadata?.registration_no || 'N/A'})`;
+            const finalContact =
+                showPhoneInput && phone
+                    ? `${defaultContact} | Phone: ${phone}`
+                    : defaultContact;
 
+            // Decide which table to insert into
+            const tableName = type === 'lost' ? 'lost_items' : 'found_items';
+
+            // Insert into database
             const { error } = await supabase
-                .from('items')
+                .from(tableName)
                 .insert([
                     {
-                        name,
-                        description,
-                        type,
-                        location,
-                        contact_info: finalContact,
+                        user_id: user.id,
+                        item_name: name,
+                        description: description,
+                        location: location,
                         image_url: imageUrl,
-                        user_id: user.id
-                    }
-                ])
+                        uploader_name: user.user_metadata?.full_name || '',
+                        uploader_reg_no:
+                            user.user_metadata?.registration_no || '',
+                        contact: finalContact,
+                    },
+                ]);
 
-            if (error) throw error
+            if (error) throw error;
 
-            setMessage('Success! Your report has been submitted.')
-            setTimeout(() => navigate(type === 'lost' ? '/lost' : '/found'), 2000)
+            setMessage('Success! Your report has been submitted.');
+
+            // Reset form
+            setName('');
+            setDescription('');
+            setLocation('');
+            setPhone('');
+            setImage(null);
+            setType('lost');
+            setShowPhoneInput(false);
+
+            setTimeout(() => {
+                navigate(type === 'lost' ? '/lost' : '/found');
+            }, 2000);
         } catch (error) {
-            setMessage('Error: ' + error.message)
+            setMessage('Error: ' + error.message);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
 
     return (
         <div className="fade-in" style={{ maxWidth: '800px', margin: '0 auto' }}>

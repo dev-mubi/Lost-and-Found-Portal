@@ -11,20 +11,20 @@ export default function FoundItems() {
     useEffect(() => {
         const fetchFoundItems = async () => {
             const { data, error } = await supabase
-                .from('items')
+                .from('found_items')
                 .select('*')
-                .eq('type', 'found')
                 .order('created_at', { ascending: false })
 
             if (!error) setItems(data)
+            else console.log(error)
             setLoading(false)
         }
         fetchFoundItems()
     }, [])
 
     const filteredItems = items.filter(item =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.location.toLowerCase().includes(searchTerm.toLowerCase())
+        item.item_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item.location || '').toLowerCase().includes(searchTerm.toLowerCase())
     )
 
     return (
@@ -65,7 +65,7 @@ export default function FoundItems() {
                             <div key={item.id} className="glass-card fade-in" style={{ padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                                 <div style={{ position: 'relative', height: '220px' }}>
                                     {item.image_url ? (
-                                        <img src={item.image_url} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                        <img src={item.image_url} alt={item.item_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                     ) : (
                                         <div style={{ width: '100%', height: '100%', background: 'var(--bg-main)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
                                             <div style={{ textAlign: 'center' }}>
@@ -78,7 +78,7 @@ export default function FoundItems() {
                                 </div>
 
                                 <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                    <h3 style={{ marginBottom: '0.75rem', color: 'var(--text-main)' }}>{item.name}</h3>
+                                    <h3 style={{ marginBottom: '0.75rem', color: 'var(--text-main)' }}>{item.item_name}</h3>
 
                                     <div style={{ fontSize: '0.875rem', marginBottom: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                                         <p style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -96,7 +96,7 @@ export default function FoundItems() {
 
                                     <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--border)' }}>
                                         <p style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--success)', marginBottom: '0.5rem' }}>CLAIM FROM</p>
-                                        <p style={{ fontSize: '0.875rem', wordBreak: 'break-all' }}>{item.contact_info}</p>
+                                        <p style={{ fontSize: '0.875rem', wordBreak: 'break-all' }}>{item.contact}</p>
                                     </div>
                                 </div>
                             </div>

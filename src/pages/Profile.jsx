@@ -59,20 +59,39 @@ export default function Profile() {
     }
 
     const handleDeleteAccount = async () => {
-        if (window.confirm('CRITICAL: Are you sure you want to delete your account? This action cannot be undone.')) {
-            setUpdating(true)
-            try {
-                const { error } = await supabase.rpc('delete_user_account')
-                if (error) throw error
-                await supabase.auth.signOut()
-                navigate('/login')
-                alert('Your account has been deleted.')
-            } catch (error) {
-                setMessage({ type: 'error', content: 'Deletion failed: ' + error.message })
-            } finally {
-                setUpdating(false)
-            }
+
+        const ok = window.confirm(
+            "Are you sure?\n\nYour account and all reports will be permanently deleted."
+        );
+
+        if (!ok) return;
+
+        setUpdating(true);
+
+        try {
+
+            const { data, error } = await supabase.functions.invoke(
+                "delete-user"
+            );
+
+            if (error) throw error;
+
+            await supabase.auth.signOut();
+
+            alert("Account deleted successfully.");
+
+            navigate("/login");
+
+        } catch (err) {
+
+            alert(err.message);
+
+        } finally {
+
+            setUpdating(false);
+
         }
+
     }
 
     if (loading) return <div className="text-center" style={{ marginTop: '4rem' }}>Loading Profile...</div>
