@@ -11,12 +11,26 @@ import Layout from './components/Layout'
 import About from './pages/About'
 import Terms from './pages/Terms'
 import Contact from './pages/Contact'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import './index.css'
 
 function App() {
   return (
     <Router>
       <Layout>
+        <ToastContainer
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

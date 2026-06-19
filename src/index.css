@@ -154,6 +154,34 @@ p {
   transition: var(--transition);
 }
 
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 992px) {
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+
+  .grid-2,
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -303,6 +331,10 @@ p {
 
   .header-title {
     font-size: 1rem;
+  }
+
+  .nav-logo .logo-text {
+    display: none;
   }
 
   .nav-actions {

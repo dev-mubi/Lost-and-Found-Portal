@@ -2,6 +2,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../supabase'
 import { useState, useEffect, useRef } from 'react'
 import { Sun, Moon, User, LogOut, LayoutDashboard, Bell, Tag, MapPin, X } from 'lucide-react'
+import { toast } from 'react-toastify'
 import logo from '../logo.png'
 
 export default function Layout({ children }) {
@@ -24,6 +25,11 @@ export default function Layout({ children }) {
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             setUser(session?.user || null)
         })
+
+        // Request browser notification permission
+        if ("Notification" in window && Notification.permission === "default") {
+            Notification.requestPermission();
+        }
 
         return () => subscription.unsubscribe()
     }, [])
@@ -60,12 +66,32 @@ export default function Layout({ children }) {
 
         fetchInitialNotifications();
 
+        // Helper to trigger notifications
+        const triggerNotification = (item, type) => {
+            const message = `New ${type} item: ${item.item_name}`;
+
+            // 1. Toast Notification
+            toast.info(message, {
+                icon: <Tag size={18} color={type === 'lost' ? '#ef4444' : '#22c55e'} />,
+                onClick: () => navigate(type === 'lost' ? '/lost' : '/found')
+            });
+
+            // 2. Browser Notification
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification("Lost & Found Portal", {
+                    body: message,
+                    icon: logo
+                });
+            }
+        }
+
         // Subscribe to NEW records
         const lostChannel = supabase.channel('public:lost_items')
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'lost_items' }, payload => {
                 const newItem = { ...payload.new, type: 'lost' };
                 setNotifications(prev => [newItem, ...prev].slice(0, 8));
                 setUnreadCount(prev => prev + 1);
+                triggerNotification(newItem, 'lost');
             })
             .subscribe();
 
@@ -74,6 +100,7 @@ export default function Layout({ children }) {
                 const newItem = { ...payload.new, type: 'found' };
                 setNotifications(prev => [newItem, ...prev].slice(0, 8));
                 setUnreadCount(prev => prev + 1);
+                triggerNotification(newItem, 'found');
             })
             .subscribe();
 
@@ -81,7 +108,7 @@ export default function Layout({ children }) {
             supabase.removeChannel(lostChannel);
             supabase.removeChannel(foundChannel);
         }
-    }, [user])
+    }, [user, navigate])
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -127,7 +154,7 @@ export default function Layout({ children }) {
                 <nav className="navbar">
                     <Link to="/dashboard" className="nav-logo" style={{ textDecoration: 'none' }}>
                         <img src={logo} alt="" className="nav-logo-mark" />
-                        Found it
+                        <span className="logo-text">Found it</span>
                     </Link>
 
                     <div className="nav-actions">
