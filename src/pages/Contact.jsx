@@ -30,14 +30,15 @@ export default function Contact() {
                         <a href="https://github.com/Wafa-Amjad" target="_blank" rel="noopener noreferrer" className="btn" style={{ background: '#24292e', color: 'white', border: 'none', height: '54px' }}>
                             <Globe size={20} /> GitHub
                         </a>
-                        <a href="https://linkedin.com/in/wafa-amjad" target="_blank" rel="noopener noreferrer" className="btn" style={{ background: '#0077b5', color: 'white', border: 'none', height: '54px' }}>
+                        <a href="https://www.linkedin.com/in/wafa-a-639a78329?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noopener noreferrer" className="btn" style={{ background: '#0077b5', color: 'white', border: 'none', height: '54px' }}>
                             <User size={20} /> LinkedIn
                         </a>
                     </div>
                 </div>
 
+
                 <p style={{ marginTop: '3rem', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                    Made with ❤️ for the CUI Community.
+                    Made for the CUI Community.
                 </p>
             </div>
         </div>

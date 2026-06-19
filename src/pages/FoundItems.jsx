@@ -60,44 +60,42 @@ export default function FoundItems() {
                 <div className="text-center" style={{ padding: '4rem' }}>Loading items...</div>
             ) : (
                 <>
-                    <div className="grid grid-3">
+                    <div className="fade-in">
                         {filteredItems.map(item => (
-                            <div key={item.id} className="glass-card fade-in" style={{ padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-                                <div style={{ position: 'relative', height: '220px' }}>
-                                    {item.image_url ? (
-                                        <img src={item.image_url} alt={item.item_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                    ) : (
-                                        <div style={{ width: '100%', height: '100%', background: 'var(--bg-main)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-                                            <div style={{ textAlign: 'center' }}>
-                                                <Search size={40} style={{ opacity: 0.2, marginBottom: '0.5rem' }} />
-                                                <p style={{ fontSize: '0.875rem' }}>No Image Provided</p>
-                                            </div>
-                                        </div>
-                                    )}
-                                    <span style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'var(--success)', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '1rem', fontSize: '0.75rem', fontWeight: '700' }}>FOUND</span>
+                            <div key={item.id} className="glass-card item-card-horizontal fade-in">
+                                <div className="item-card-content">
+                                    <h2 style={{ marginBottom: '1rem', color: 'var(--text-main)', fontSize: '1.5rem' }}>{item.item_name}</h2>
+
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '1.5rem' }}>
+                                        <p style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', margin: 0 }}>
+                                            <MapPin size={18} style={{ color: 'var(--success)' }} /> {item.location}
+                                        </p>
+                                        <p style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', margin: 0 }}>
+                                            <Calendar size={18} /> {new Date(item.created_at).toLocaleDateString()}
+                                        </p>
+                                    </div>
+
+                                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1.25rem', borderRadius: '12px', marginBottom: '1.5rem', flex: 1 }}>
+                                        <p style={{ fontSize: '0.75rem', fontWeight: '800', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.5rem', letterSpacing: '0.5px' }}>Description</p>
+                                        <p style={{ fontSize: '0.95rem', lineHeight: '1.6', color: 'var(--text-main)', margin: 0 }}>{item.description}</p>
+                                    </div>
+
+                                    <div style={{ paddingTop: '1.25rem', borderTop: '1px solid var(--border)' }}>
+                                        <p style={{ fontSize: '0.75rem', fontWeight: '800', color: 'var(--success)', marginBottom: '0.5rem', letterSpacing: '0.5px' }}>CLAIM FROM</p>
+                                        <p style={{ fontSize: '1rem', fontWeight: '500', color: 'var(--text-main)', margin: 0 }}>{item.contact}</p>
+                                    </div>
                                 </div>
 
-                                <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                    <h3 style={{ marginBottom: '0.75rem', color: 'var(--text-main)' }}>{item.item_name}</h3>
-
-                                    <div style={{ fontSize: '0.875rem', marginBottom: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                                        <p style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                            <MapPin size={16} style={{ color: 'var(--success)' }} /> {item.location}
-                                        </p>
-                                        <p style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                            <Calendar size={16} /> {new Date(item.created_at).toLocaleDateString()}
-                                        </p>
-                                    </div>
-
-                                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem' }}>
-                                        <p style={{ fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Description</p>
-                                        <p style={{ fontSize: '0.9rem', lineHeight: '1.5' }}>{item.description}</p>
-                                    </div>
-
-                                    <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--border)' }}>
-                                        <p style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--success)', marginBottom: '0.5rem' }}>CLAIM FROM</p>
-                                        <p style={{ fontSize: '0.875rem', wordBreak: 'break-all' }}>{item.contact}</p>
-                                    </div>
+                                <div className="item-card-image-box">
+                                    <span className="item-badge" style={{ background: 'var(--success)' }}>FOUND</span>
+                                    {item.image_url ? (
+                                        <img src={item.image_url} alt={item.item_name} className="item-card-image" />
+                                    ) : (
+                                        <div style={{ textAlign: 'center', opacity: 0.3 }}>
+                                            <Search size={48} style={{ marginBottom: '0.5rem' }} />
+                                            <p style={{ fontSize: '0.8rem', margin: 0 }}>No Image</p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         ))}
