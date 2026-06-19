@@ -1,10 +1,10 @@
-# Lost & Found Portal
+# Found it
 
-A campus-based Lost & Found management system that helps students report lost and found items, browse available listings, upload item images, manage their profiles, and submit feedback through a centralized web platform.
+A campus-based lost and found management system that helps students report lost and found items, browse available listings, upload item images, manage their profiles, and submit feedback through a centralized web platform.
 
 ## Overview
 
-Lost & Found Portal is a React-based web application designed for university communities. Instead of relying on scattered WhatsApp messages, group posts, or manual coordination, the portal provides one place where students can report lost items, share found items, and view relevant item details.
+Found it is a React-based web application designed for university communities. Instead of relying on scattered WhatsApp messages, group posts, or manual coordination, the app provides one place where students can report lost items, share found items, and view relevant item details.
 
 The application supports authentication, lost/found item reporting, image uploads, searchable listings, profile management, and feedback submission.
 

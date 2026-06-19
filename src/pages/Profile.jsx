@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
 import { useNavigate, Link } from 'react-router-dom'
-import { User, Mail, GraduationCap, School, Calendar, Edit2, Save, X, Trash2, ArrowLeft } from 'lucide-react'
+import { Mail, GraduationCap, School, Calendar, Edit2, Save, X, Trash2, ArrowLeft } from 'lucide-react'
 
 export default function Profile() {
     const [user, setUser] = useState(null)

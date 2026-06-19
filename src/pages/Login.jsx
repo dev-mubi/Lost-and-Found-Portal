@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { supabase } from '../supabase'
 import { useNavigate, Link } from 'react-router-dom'
-import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react'
+import './Auth.css'
+import logo from '../logo.png'
 
 export default function Login() {
     const [email, setEmail] = useState('')
@@ -31,69 +32,97 @@ export default function Login() {
 
     return (
         <div className="auth-page fade-in">
-            <div className="text-center" style={{ marginBottom: '2.5rem' }}>
-                <p style={{ letterSpacing: '2px', textTransform: 'uppercase', fontSize: '0.8rem', fontWeight: '700', color: 'var(--primary)', marginBottom: '0.5rem' }}>Welcome to</p>
-                <h1>Lost & Found Portal</h1>
-            </div>
+            <div className="auth-shell">
+                <section className="auth-intro" aria-labelledby="login-title">
+                    <div className="auth-intro-copy">
+                        <div className="auth-brand">
+                            <span className="auth-logo-frame">
+                                <img src={logo} alt="" className="auth-logo" />
+                            </span>
+                            <span className="auth-brand-name">Found it</span>
+                        </div>
+                        <p className="auth-kicker">Campus recovery workspace</p>
+                        <h1 id="login-title">
+                            <span>Recover what matters, faster.</span>
+                        </h1>
+                        <p className="auth-lead">
+                            Sign in to manage reports, review campus listings, and follow up on item claims with less back-and-forth.
+                        </p>
+                    </div>
 
-            <div className="auth-card">
-                <h2 style={{ marginBottom: '0.5rem' }}>Login</h2>
-                <p style={{ marginBottom: '2rem', color: 'var(--text-muted)' }}>Sign in to continue to the portal</p>
+                    <div className="auth-proof">
+                        <div className="auth-proof-row">
+                            <span>Access</span>
+                            <strong>University email accounts only</strong>
+                        </div>
+                        <div className="auth-proof-row">
+                            <span>Use case</span>
+                            <strong>Lost reports, found listings, and claim follow-ups</strong>
+                        </div>
+                        <div className="auth-proof-row">
+                            <span>Campus</span>
+                            <strong>CUI Abbottabad</strong>
+                        </div>
+                    </div>
+                </section>
 
-                {error && <div className="error-msg" style={{ background: 'rgba(239, 68, 68, 0.1)', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid var(--error)' }}>{error}</div>}
+                <section className="auth-card" aria-label="Sign in form">
+                    <div className="auth-card-header">
+                        <p className="auth-eyebrow">Sign in</p>
+                        <h2>Welcome back</h2>
+                        <p>Sign in with the email and password you created.</p>
+                    </div>
 
-                <form onSubmit={handleLogin}>
-                    <div className="input-group">
-                        <label className="input-label">Email Address</label>
-                        <div style={{ position: 'relative' }}>
-                            <Mail size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                    {error && <div className="auth-alert auth-alert-error">{error}</div>}
+
+                    <form onSubmit={handleLogin} className="auth-form">
+                        <div className="input-group">
+                            <label className="input-label" htmlFor="login-email">Email Address</label>
                             <input
+                                id="login-email"
                                 type="email"
-                                className="form-control"
-                                placeholder="name@cuiatd.edu.pk"
-                                style={{ paddingLeft: '3rem' }}
+                                className="form-control auth-input"
+                                placeholder="reg_no@cuiatd.edu.pk"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                autoComplete="email"
                                 required
                             />
                         </div>
-                    </div>
 
-                    <div className="input-group">
-                        <label className="input-label">Password</label>
-                        <div style={{ position: 'relative' }}>
-                            <Lock size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                        <div className="input-group">
+                            <div className="auth-label-row">
+                                <label className="input-label" htmlFor="login-password">Password</label>
+                                <button
+                                    type="button"
+                                    className="auth-text-button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    aria-pressed={showPassword}
+                                >
+                                    {showPassword ? 'Hide' : 'Show'}
+                                </button>
+                            </div>
                             <input
-                                type={showPassword ? "text" : "password"}
-                                className="form-control"
-                                placeholder="••••••••"
-                                style={{ paddingLeft: '3rem', paddingRight: '3.5rem' }}
+                                id="login-password"
+                                type={showPassword ? 'text' : 'password'}
+                                className="form-control auth-input"
+                                placeholder="Enter your password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                autoComplete="current-password"
                                 required
                             />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-                            >
-                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                            </button>
                         </div>
-                    </div>
 
-                    <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem', height: '50px' }} disabled={loading}>
-                        {loading ? 'Signing in...' : (
-                            <>
-                                Sign In <ArrowRight size={18} />
-                            </>
-                        )}
-                    </button>
-                </form>
+                        <button type="submit" className="btn btn-primary auth-submit" disabled={loading}>
+                            {loading ? 'Signing in...' : 'Sign In'}
+                        </button>
+                    </form>
 
-                <p className="text-center" style={{ marginTop: '2rem', fontSize: '0.9375rem', color: 'var(--text-muted)' }}>
-                    Don't have an account? <Link to="/signup" className="link">Create one</Link>
-                </p>
+                    <p className="auth-switch">
+                        Don't have an account? <Link to="/signup" className="link">Create one</Link>
+                    </p>
+                </section>
             </div>
         </div>
     )

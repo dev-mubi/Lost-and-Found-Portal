@@ -2,6 +2,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../supabase'
 import { useState, useEffect } from 'react'
 import { Sun, Moon, User, LogOut, LayoutDashboard } from 'lucide-react'
+import logo from '../logo.png'
 
 export default function Layout({ children }) {
     const [user, setUser] = useState(null)
@@ -37,7 +38,6 @@ export default function Layout({ children }) {
         setTheme(theme === 'dark' ? 'light' : 'dark')
     }
 
-    // Hide navbar links on auth pages if needed, but the user wants it fixed everywhere for consistency
     const isAuthPage = location.pathname === '/login' || location.pathname === '/signup'
 
     return (
@@ -45,7 +45,8 @@ export default function Layout({ children }) {
             {!isAuthPage && (
                 <nav className="navbar">
                     <div className="nav-logo">
-                        Lost & Found Portal
+                        <img src={logo} alt="" className="nav-logo-mark" />
+                        Found it
                     </div>
 
                     <div className="nav-actions">
@@ -75,12 +76,15 @@ export default function Layout({ children }) {
             </main>
 
             <footer className="footer">
-                <div className="footer-links">
-                    <Link to="/terms" className="footer-link">Terms of Service</Link>
-                    <Link to="/about" className="footer-link">About</Link>
-                    <Link to="/contact" className="footer-link">Contact</Link>
+                <div className="footer-inner">
+                    <p className="footer-copy">&copy; 2026 Found it - CUI Abbottabad</p>
+
+                    <nav className="footer-links" aria-label="Footer navigation">
+                        <Link to="/terms" className="footer-link">Terms of Service</Link>
+                        <Link to="/about" className="footer-link">About</Link>
+                        <Link to="/contact" className="footer-link">Contact</Link>
+                    </nav>
                 </div>
-                <p className="footer-link">© 2026 Lost & Found Portal - CUI Abbottabad</p>
             </footer>
         </div>
     )
