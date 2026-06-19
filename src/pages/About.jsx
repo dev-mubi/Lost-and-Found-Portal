@@ -11,11 +11,11 @@ export default function About() {
             <div className="glass-card" style={{ padding: '3rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', color: 'var(--primary)' }}>
                     <Info size={32} />
-                    <h1 style={{ margin: 0 }}>About the Portal</h1>
+                    <h1 style={{ margin: 0 }}>About Found it</h1>
                 </div>
 
                 <p style={{ fontSize: '1.125rem', lineHeight: '1.6', color: 'var(--text-muted)', marginBottom: '2.5rem' }}>
-                    The CUI Lost & Found Portal is a dedicated platform designed to help students and staff within the university community safely recover lost items and report found belongings.
+                    Found it is a dedicated platform designed to help students and staff within the CUI community safely recover lost items and report found belongings.
                 </p>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem', color: 'var(--primary)' }}>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
 import { Link } from 'react-router-dom'
-import { MapPin, Phone, Calendar, Info, Search, ArrowLeft, Plus } from 'lucide-react'
+import { MapPin, Calendar, Info, Search, ArrowLeft, Plus } from 'lucide-react'
 
 export default function LostItems() {
     const [items, setItems] = useState([])
