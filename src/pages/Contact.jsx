@@ -22,7 +22,7 @@ export default function Contact() {
                         </div>
                         <div style={{ textAlign: 'left' }}>
                             <p style={{ margin: 0, fontSize: '0.8rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Email Me</p>
-                            <p style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-main)' }}>wafaamjad058@gmail.com</p>
+                            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-main)' }}>wafaamjad058@gmail.com</p>
                         </div>
                     </a>
 
