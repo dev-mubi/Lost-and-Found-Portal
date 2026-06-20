@@ -4,19 +4,47 @@ import { useNavigate, Link } from 'react-router-dom'
 import './Auth.css'
 import logo from '../logo.png'
 
+const SESSION_OPTIONS = [
+    'FA01', 'FA02', 'FA03', 'FA04', 'FA05', 'FA06', 'FA07', 'FA08', 'FA09',
+    'FA10', 'FA11', 'FA12', 'FA13', 'FA14', 'FA15', 'FA16', 'FA17', 'FA18',
+    'FA19', 'FA20', 'FA21', 'FA22', 'FA23', 'FA24', 'FA25',
+    'SP02', 'SP03', 'SP04', 'SP05', 'SP06', 'SP07', 'SP08', 'SP09', 'SP10',
+    'SP11', 'SP12', 'SP13', 'SP14', 'SP15', 'SP16', 'SP17', 'SP18', 'SP19',
+    'SP20', 'SP21', 'SP22', 'SP23', 'SP24', 'SP25', 'SP26'
+]
+
+const PROGRAM_OPTIONS = [
+    'BBA', 'BBS', 'BCE', 'BCS', 'BDA', 'BDS', 'BEC', 'BEE', 'BEN', 'BES',
+    'BIT', 'BMD', 'BML', 'BMT', 'BPY', 'BS (CE)', 'BSE', 'BSM', 'BTN', 'BTY',
+    'CVE', 'EEE', 'EPE', 'ERS', 'GEO', 'HUM', 'MBA', 'MCS', 'MDS', 'MIT',
+    'PBT', 'PCE', 'PCM', 'PCS', 'PCV', 'PDS', 'PEE', 'PES', 'PGO', 'PGP',
+    'PHM', 'PMS', 'PMT', 'PPY', 'R05', 'RAI', 'RBA', 'RBF', 'RBT', 'RCE',
+    'RCM', 'RCP', 'RCS', 'RCT', 'RCV', 'RDS', 'REC', 'REE', 'REN', 'RER',
+    'RES', 'RMB', 'RMS', 'RMT', 'RPM', 'RPY', 'RSW'
+]
+
 export default function Signup() {
-    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [fullName, setFullName] = useState('')
     const [sem, setSem] = useState('')
     const [dept, setDept] = useState('')
-    const [regNo, setRegNo] = useState('')
+    const [regSession, setRegSession] = useState('')
+    const [regProgram, setRegProgram] = useState('')
+    const [regRollNo, setRegRollNo] = useState('')
     const [showPassword, setShowPassword] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
     const [message, setMessage] = useState(null)
 
     const navigate = useNavigate()
+    const formattedRollNo = regRollNo.padStart(3, '0')
+    const regNo = regSession && regProgram && regRollNo ? `${regSession}-${regProgram}-${formattedRollNo}` : ''
+    const generatedEmail = regNo ? `${regNo.toLowerCase()}@cuiatd.edu.pk` : ''
+
+    const handleProgramChange = (program) => {
+        setRegProgram(program)
+        setDept(program)
+    }
 
     const handleSignup = async (e) => {
         e.preventDefault()
@@ -24,15 +52,22 @@ export default function Signup() {
         setError(null)
         setMessage(null)
 
-        const emailRegex = /^[A-Z0-9.-]+@cuiatd\.edu\.pk$/i
-        if (!emailRegex.test(email)) {
-            setError('Please use a valid university email (e.g., FA23-BCS-133@cuiatd.edu.pk)')
+        if (!regSession || !regProgram || !regRollNo) {
+            setError('Please select your session, program, and roll number.')
             setLoading(false)
             return
         }
 
+        if (!/^\d{1,3}$/.test(regRollNo) || Number(regRollNo) < 1) {
+            setError('Please enter a valid roll number between 001 and 999.')
+            setLoading(false)
+            return
+        }
+
+        const signupEmail = generatedEmail
+
         const { data, error } = await supabase.auth.signUp({
-            email,
+            email: signupEmail,
             password,
             options: {
                 data: {
@@ -136,15 +171,48 @@ export default function Signup() {
 
                         <div className="auth-field-grid">
                             <div className="input-group">
-                                <label className="input-label" htmlFor="signup-reg">Registration No</label>
-                                <input
-                                    id="signup-reg"
-                                    className="form-control auth-input"
-                                    placeholder="FA23-BCS-133"
-                                    value={regNo}
-                                    onChange={(e) => setRegNo(e.target.value)}
-                                    required
-                                />
+                                <label className="input-label" htmlFor="signup-reg-session">Registration No</label>
+                                <div className="auth-reg-builder">
+                                    <select
+                                        id="signup-reg-session"
+                                        className="form-control auth-input auth-reg-select"
+                                        value={regSession}
+                                        onChange={(e) => setRegSession(e.target.value)}
+                                        required
+                                    >
+                                        <option value="" disabled>Session</option>
+                                        {SESSION_OPTIONS.map(session => (
+                                            <option key={session} value={session}>{session}</option>
+                                        ))}
+                                    </select>
+
+                                    <select
+                                        className="form-control auth-input auth-reg-select"
+                                        value={regProgram}
+                                        onChange={(e) => handleProgramChange(e.target.value)}
+                                        aria-label="Registration program"
+                                        required
+                                    >
+                                        <option value="" disabled>Program</option>
+                                        {PROGRAM_OPTIONS.map(program => (
+                                            <option key={program} value={program}>{program}</option>
+                                        ))}
+                                    </select>
+
+                                    <input
+                                        className="form-control auth-input auth-reg-roll"
+                                        inputMode="numeric"
+                                        maxLength={3}
+                                        placeholder="133"
+                                        value={regRollNo}
+                                        onChange={(e) => setRegRollNo(e.target.value.replace(/\D/g, '').slice(0, 3))}
+                                        aria-label="Registration roll number"
+                                        required
+                                    />
+                                </div>
+                                <p className="auth-reg-preview">
+                                    {regNo || 'Your registration number will appear here'}
+                                </p>
                             </div>
 
                             <div className="input-group">
@@ -166,12 +234,13 @@ export default function Signup() {
                             <label className="input-label" htmlFor="signup-dept">Department</label>
                             <input
                                 id="signup-dept"
-                                className="form-control auth-input"
-                                placeholder="e.g. Computer Science"
+                                className="form-control auth-input auth-input-readonly"
+                                placeholder="Select program first"
                                 value={dept}
-                                onChange={(e) => setDept(e.target.value)}
-                                required
+                                readOnly
+                                aria-readonly="true"
                             />
+                            <p className="auth-reg-preview">Filled automatically from your selected program.</p>
                         </div>
 
                         <div className="input-group">
@@ -179,13 +248,14 @@ export default function Signup() {
                             <input
                                 id="signup-email"
                                 type="email"
-                                className="form-control auth-input"
-                                placeholder="reg_no@cuiatd.edu.pk"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                className="form-control auth-input auth-input-readonly"
+                                placeholder="Complete registration number first"
+                                value={generatedEmail}
+                                readOnly
+                                aria-readonly="true"
                                 autoComplete="email"
-                                required
                             />
+                            <p className="auth-reg-preview">Generated from your registration number.</p>
                         </div>
 
                         <div className="input-group">
