@@ -180,7 +180,7 @@ export default function Layout({ children }) {
                                             </div>
                                             <div className="notification-list">
                                                 {notifications.length > 0 ? (
-                                                    notifications.map((notif, idx) => (
+                                                    notifications.map((notif) => (
                                                         <Link
                                                             key={`${notif.type}-${notif.id}`}
                                                             to={notif.type === 'lost' ? '/lost' : '/found'}

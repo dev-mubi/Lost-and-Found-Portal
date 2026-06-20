@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { supabase } from '../supabase'
 import { useNavigate, Link } from 'react-router-dom'
 import { Upload, MapPin, Tag, Info, Phone, ArrowLeft, Send, X } from 'lucide-react'
@@ -11,26 +11,26 @@ export default function Report() {
     const [phone, setPhone] = useState('')
     const [showPhoneInput, setShowPhoneInput] = useState(false)
     const [image, setImage] = useState(null)
-    const [previewUrl, setPreviewUrl] = useState(null)
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState('')
     const navigate = useNavigate()
+    const previewUrl = useMemo(() => {
+        if (!image) return null
+        return URL.createObjectURL(image)
+    }, [image])
 
     useEffect(() => {
-        if (!image) {
-            setPreviewUrl(null)
-            return
-        }
-
-        const objectUrl = URL.createObjectURL(image)
-        setPreviewUrl(objectUrl)
-
-        // Free memory
-        return () => URL.revokeObjectURL(objectUrl)
-    }, [image])
+        if (!previewUrl) return undefined
+        return () => URL.revokeObjectURL(previewUrl)
+    }, [previewUrl])
 
     const handleFileChange = (e) => {
         const file = e.target.files[0]
+        if (!file) {
+            setImage(null)
+            return
+        }
+
         if (file) {
             if (file.size > 10 * 1024 * 1024) {
                 alert("File size exceeds 10MB limit.")
@@ -43,7 +43,6 @@ export default function Report() {
 
     const removeImage = () => {
         setImage(null)
-        setPreviewUrl(null)
     }
 
     const handleSubmit = async (e) => {

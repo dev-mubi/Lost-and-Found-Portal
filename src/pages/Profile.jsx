@@ -70,7 +70,7 @@ export default function Profile() {
 
         try {
 
-            const { data, error } = await supabase.functions.invoke(
+            const { error } = await supabase.functions.invoke(
                 "delete-user"
             );
 
