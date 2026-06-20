@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase'
 import { useNavigate, Link } from 'react-router-dom'
-import { Mail, GraduationCap, School, Calendar, Edit2, Save, X, Trash2, ArrowLeft } from 'lucide-react'
+import { Mail, GraduationCap, School, Calendar, Edit2, Save, X, Trash2, ArrowLeft, Check } from 'lucide-react'
+import { PRESET_AVATARS } from '../constants/avatars'
 
 export default function Profile() {
     const [user, setUser] = useState(null)
@@ -59,7 +60,6 @@ export default function Profile() {
     }
 
     const handleDeleteAccount = async () => {
-
         const ok = window.confirm(
             "Are you sure?\n\nYour account and all reports will be permanently deleted."
         );
@@ -69,7 +69,6 @@ export default function Profile() {
         setUpdating(true);
 
         try {
-
             const { error } = await supabase.functions.invoke(
                 "delete-user"
             );
@@ -81,17 +80,11 @@ export default function Profile() {
             alert("Account deleted successfully.");
 
             navigate("/login");
-
         } catch (err) {
-
             alert(err.message);
-
         } finally {
-
             setUpdating(false);
-
         }
-
     }
 
     if (loading) return <div className="text-center" style={{ marginTop: '4rem' }}>Loading Profile...</div>
@@ -138,7 +131,7 @@ export default function Profile() {
                             </div>
                             <div className="input-group">
                                 <label className="input-label">Registration No</label>
-                                <input className="form-control" value={regNo} onChange={(e) => setRegNo(e.target.value)} required />
+                                <input className="form-control" value={regNo} readOnly title="Registration number cannot be changed" />
                             </div>
                             <div className="input-group">
                                 <label className="input-label">Semester</label>
@@ -148,12 +141,38 @@ export default function Profile() {
                             </div>
                             <div className="input-group">
                                 <label className="input-label">Department</label>
-                                <input className="form-control" value={dept} onChange={(e) => setDept(e.target.value)} required />
+                                <input className="form-control" value={dept} readOnly title="Department cannot be changed" />
                             </div>
                         </div>
-                        <div className="input-group" style={{ marginTop: '1rem' }}>
-                            <label className="input-label">Avatar URL</label>
-                            <input className="form-control" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} placeholder="https://example.com/photo.jpg" />
+
+                        <div className="input-group" style={{ marginTop: '1.5rem' }}>
+                            <label className="input-label">Choose Avatar</label>
+                            <div className="avatar-presets-grid">
+                                {PRESET_AVATARS.map(avatar => {
+                                    const isSelected = avatarUrl === avatar.url;
+                                    return (
+                                        <button
+                                            key={avatar.id}
+                                            type="button"
+                                            className={`avatar-preset-option ${isSelected ? 'selected' : ''}`}
+                                            onClick={() => setAvatarUrl(avatar.url)}
+                                            title={avatar.label}
+                                            style={{ cursor: 'pointer' }}
+                                        >
+                                            <img
+                                                src={avatar.url}
+                                                alt={avatar.label}
+                                                className="avatar-preset-image"
+                                            />
+                                            {isSelected && (
+                                                <div className="avatar-preset-badge">
+                                                    <Check size={12} strokeWidth={3} />
+                                                </div>
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
 
                         <div style={{ display: 'flex', gap: '1rem', marginTop: '2.5rem' }}>

@@ -3,6 +3,7 @@ import { supabase } from '../supabase'
 import { useNavigate, Link } from 'react-router-dom'
 import './Auth.css'
 import logo from '../logo.png'
+import { PRESET_AVATARS } from '../constants/avatars'
 
 const SESSION_OPTIONS = [
     'FA01', 'FA02', 'FA03', 'FA04', 'FA05', 'FA06', 'FA07', 'FA08', 'FA09',
@@ -65,6 +66,7 @@ export default function Signup() {
         }
 
         const signupEmail = generatedEmail
+        const randomAvatar = PRESET_AVATARS[Math.floor(Math.random() * PRESET_AVATARS.length)].url
 
         const { data, error } = await supabase.auth.signUp({
             email: signupEmail,
@@ -75,6 +77,7 @@ export default function Signup() {
                     semester: sem,
                     department: dept,
                     registration_no: regNo,
+                    avatar_url: randomAvatar,
                 },
             },
         })
